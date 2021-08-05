@@ -1,0 +1,157 @@
+<template>
+  <div class="app-container">
+      <!-- 查询表单-->
+      <el-form :inline="true" class="demo-form-inline">
+      <el-form-item>
+        <el-input v-model="teamQuery.user_id" placeholder="学号" />
+      </el-form-item>
+
+      <el-form-item>
+        <el-input v-model="teamQuery.user_name" placeholder="姓名" />
+      </el-form-item>
+
+      <el-form-item>
+        <el-input v-model="teamQuery.grade" placeholder="年级" />
+      </el-form-item>
+
+      <el-button type="primary" icon="el-icon-search" @click="getList()">查询</el-button>
+      <el-button type="default" @click="resetData()">清空</el-button>
+    </el-form>
+
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="数据加载中"
+      :default-sort="{prop: 'score', order: 'descending'}"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column label="序号" width="50" align="center">
+        <template slot-scope="scope">
+          {{ (page - 1) * limit + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="team_id" label="队伍号" width="50" />
+
+      <el-table-column prop="grade" label="年级" width="85" />
+
+      <el-table-column prop="team_name" label="队伍名" width="350" />
+
+      <el-table-column prop="member1_name" label="队长" width = "100" />
+
+      <el-table-column prop="member2_name" label="队员" width="100" />
+
+      <el-table-column prop="member3_name" label="队员" width="100" />
+
+      <el-table-column prop="coach" label="教练" width="100" />
+
+      <el-table-column prop="modify_time" label="上次修改时间" />
+
+      <el-table-column label="操作" width="300" align="cejnter">
+        <template slot-scope="scope">
+          <router-link :to="'/team/edit/' + scope.row.team_id">
+            <el-button type="primary" size="mini" icon="el-icon-edit"
+              >修改</el-button
+            >
+          </router-link>
+          <el-button
+            type="danger"
+            size="mini"
+            icon="el-icon-delete"
+            @click="removeDataById(scope.row.team_id)"
+            >删除</el-button
+          >
+        </template>
+      </el-table-column>
+
+    </el-table>
+    <!-- 分页 -->
+    <el-pagination
+      :current-page="page"
+      :page-size="limit"
+      :page-sizes = "[10, 50, 500]"
+      :total="total"
+      style="padding: 30px 0; text-align: center"
+      layout="total, sizes, prev, pager, next, jumper"
+      @current-change="getList"
+      @size-change="handleSizeChange"
+    />
+  </div>
+</template>
+<script>
+
+import team from "@/api/acm/team";
+import { mapGetters } from 'vuex'
+
+
+export default {
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
+  },
+  data() {
+    //定义变量和初始值
+    return {
+      list: null, //条件查询之后接口返回集合
+      page: 1, //当前页，默认值为1
+      limit: 10, //每页记录数
+      total: 0, //总记录数
+      teamQuery: {token:this.token}, //条件封装对象
+      listLoading:false
+    };
+  },
+  created() {
+    //页面渲染之前执行，一般调用methods定义的方法
+
+    this.getList();
+  },
+  methods: {
+    //创建具体方法
+    handleSizeChange(val) {
+        this.limit = val;
+        this.getList();
+    },
+    getList(page = 1) {
+        this.page = page
+        this.listLoading = true
+        // console.log(this.token);
+        this.teamQuery.token = this.token
+      team
+        .getTeamListPage(this.page, this.limit, this.teamQuery)
+        .then((response) => {
+          this.list = response.data.rows;
+          this.total = response.data.total;
+          this.listLoading = false;
+        })
+    },//清空方法
+    resetData() {
+        //表单输入项数据清空
+        this.teamQuery = {}
+
+        //查询所有数据
+        this.getList()
+    },
+    removeDataById(id) {
+        this.$confirm('此操作将永久删除该成员, 是否继续?', '提示', {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+          type: 'warning'
+        }).then(() => {
+            team.deleteTeamById(id)
+            .then(response => {//删除成功
+                //提示信息
+                this.$message({
+                type: 'success',
+                message: '删除成功!'
+                });
+                //查询所有数据
+                this.getList()
+            })
+        });
+    }
+  },
+};
+</script>

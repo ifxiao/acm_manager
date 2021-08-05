@@ -1,0 +1,14 @@
+README.md
+setup.cfg
+setup.py
+CodeforcesApiPy.egg-info/PKG-INFO
+CodeforcesApiPy.egg-info/SOURCES.txt
+CodeforcesApiPy.egg-info/dependency_links.txt
+CodeforcesApiPy.egg-info/requires.txt
+CodeforcesApiPy.egg-info/top_level.txt
+codeforces_api/__init__.py
+codeforces_api/api_request_maker.py
+codeforces_api/api_requests.py
+codeforces_api/parse_methods.py
+codeforces_api/types.py
+codeforces_api/version.py

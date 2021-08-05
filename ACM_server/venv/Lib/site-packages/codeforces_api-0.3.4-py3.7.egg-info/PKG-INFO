@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: codeforces-api
+Version: 0.3.4
+Summary: Wrapper library for Codeforces API
+Home-page: https://github.com/soon/CodeforcesAPI
+Author: Andrew Kuchev
+Author-email: 0coming.soon@gmail.com
+License: MIT
+Description: UNKNOWN
+Keywords: codeforces api wrapper
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Utilities
